@@ -69,7 +69,7 @@ def main():
 
     while check_unfinished_matches():
         check_changes(competition_id, current_matchday, insta_bot)
-        time.sleep(5)
+        time.sleep(7200)
 
     print("Matchday Finished")
 
