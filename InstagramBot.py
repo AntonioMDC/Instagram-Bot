@@ -44,8 +44,9 @@ class InstagramBot:
 
 
     def upload_photo(self, photo_path):
+        time.sleep(2)
         self.driver.find_element_by_xpath("//html/body/div[1]/section/nav[2]/div/div/div[2]/div/div/div[3]").click()
-        self.driver.find_element_by_xpath("/html/body/div[1]/section/nav[2]/div/div/form/input").send_keys(os.getcwd() + "/test_images/test.jpg")
+        self.driver.find_element_by_xpath("/html/body/div[1]/section/nav[2]/div/div/form/input").send_keys(os.path.join(os.getcwd() + photo_path))
         self.driver.find_element_by_xpath("//button[text()='Siguiente']").click()
         self.driver.find_element_by_xpath("//button[text()='Compartir']").click()
 
