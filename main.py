@@ -76,7 +76,7 @@ def main():
     current_matchday = get_matchday_matches(competition_id)
 
     while check_unfinished_matches():
-        check_changes(competition_id, current_matchday, insta_bot)
+        check_changes_and_upload_if_match_finished(competition_id, current_matchday, insta_bot)
         time.sleep(7200)
 
     print("Matchday Finished")
