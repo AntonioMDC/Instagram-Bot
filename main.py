@@ -26,18 +26,21 @@ def get_matchday_matches(competition_id):
     with open('data.txt', 'w') as outfile:
         json.dump(parsed_response, outfile)
         
-    response_current_matchday_matches = requests.get('https://api.football-data.org/v2/competitions/' + str(competition_id) + '/matches?' + 'matchday=' + str(matchday), headers=HEADER)
+    response_current_matchday_matches = requests.get('https://api.football-data.org/v2/competitions/' + str(competition_id) 
+                                                    + '/matches?' + 'matchday=' + str(matchday), headers=HEADER)
     parsed_response_current_matchday_matches = json.loads(response_current_matchday_matches.text)
     
     for match in parsed_response_current_matchday_matches['matches']:
-        new_match = Match(match['homeTeam']['name'], match['awayTeam']['name'], match['score']['fullTime']['homeTeam'], match['score']['fullTime']['awayTeam'], match['status'])
+        new_match = Match(match['homeTeam']['name'], match['awayTeam']['name'], match['score']['fullTime']['homeTeam'], 
+                            match['score']['fullTime']['awayTeam'], match['status'])
         matchday_matches.append(new_match)
 
     return matchday
 
 
-def check_changes(competition_id, matchday, insta_bot):
-    response = requests.get('https://api.football-data.org/v2/competitions/' + str(competition_id) + '/matches?' + str(matchday), headers=HEADER)
+def check_changes_and_upload_if_match_finished(competition_id, matchday, insta_bot):
+    response = requests.get('https://api.football-data.org/v2/competitions/' + str(competition_id) 
+                            + '/matches?' + str(matchday), headers=HEADER)
     parsed_response = json.loads(response.text)
 
     for new_match, match in zip(parsed_response['matches'], matchday_matches):
@@ -47,12 +50,16 @@ def check_changes(competition_id, matchday, insta_bot):
 
             print("Uploading ", match.home_team, " vs ", match.away_team, " photo...")
 
-            photo_path = create_photo(match)
-            insta_bot.login()
-            insta_bot.upload_photo(photo_path)
-            match.already_uploaded = True
+            create_and_upload_photo(insta_bot, match)
 
     return matchday
+
+
+def create_and_upload_photo(insta_bot, match):
+    photo_path = create_photo(match)
+    insta_bot.login()
+    insta_bot.upload_photo(photo_path)
+    match.already_uploaded = True
 
 
 def check_unfinished_matches():
@@ -61,6 +68,7 @@ def check_unfinished_matches():
             return True
 
     return False
+
 
 def main():
     insta_bot = InstagramBot()
